@@ -1,6 +1,6 @@
-var Command = require('./command');
-var Query = require('./query');
-var Stream = require('./stream');
+var Command = require('./src/command');
+var Query = require('./src/query');
+var Stream = require('./src/stream');
 
 const express = require('express')
 const app = express();
@@ -14,10 +14,10 @@ const EventEmitter = require('events');
 
 const eventEmitter = new EventEmitter();
 
-Query(eventEmitter, app);
+Stream.init(eventEmitter);
 
-Command(eventEmitter, app);
+Query(eventEmitter, Stream, app);
 
-Stream(eventEmitter, () => {
-	app.listen(3000, () => console.log('Example app listening on port 3000!'));
-});
+Command(eventEmitter, Stream, app);
+
+app.listen(3000, () => console.log('Example app listening on port 3000!'));

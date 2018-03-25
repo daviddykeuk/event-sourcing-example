@@ -1,0 +1,38 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 10
+      arrivalRate: 1
+    - duration: 50
+      arrivalRate: 1
+      rampTo: 50
+  defaults:
+    headers:
+      content-type: 'application/json'
+scenarios:
+  - name: "Create, deposit, withdraw and reference"
+    flow:
+      - post:
+          url: "/"
+          body: '{"first_name":"First","last_name":"Last","email":"first@last.com"}'
+          capture:
+            json: "$.id"
+            as: "id"
+      - think: 1
+      - get:
+          url: "/{{ id }}"
+      - think: 1
+      - put:
+          url: "/{{ id }}"
+          body: '{"description":"Deposit", "amount":1000}'
+      - think: 1
+      - put:
+          url: "/{{ id }}"
+          body: '{"description":"Food shop", "amount":-30}'
+      - think: 1
+      - put:
+          url: "/{{ id }}"
+          body: '{"description":"Big screen TV", "amount":-900}'
+      - think: 1
+      - get:
+          url: "/{{ id }}"
